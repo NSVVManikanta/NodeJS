@@ -11,31 +11,11 @@ app.use(express.json());
 albums.hasMany(songs,{ foreignKey: 'albumId' });
 songs.belongsTo(albums);
 
-
-let albumID=null;
 sequelize
 .sync()
 .then((result)=>{
-   // return albums.create({title: "Gethagovindam", year: "2022"})
     console.log(result);
-})
-/*.then(albums =>{
-    albumID = albums.id;
-    console.log('First Album created '+albums);
-    //return songs.create({title: " Inkem",length: "2",composers: "DSP",singers: "sidsriram",lyricists: "Dsp"});
-    //return albums.createSongs({title: "Inkem Inkem",length: "2",composers: "DSP",singers: "sidsriram",lyricists: "Dsp"});
-})
-.then(song=>{
-    console.log('song is'+song);
-})
-  /*  return song.findAll({ where : albumID});
-})
-.then(songs=>{
-    console.log('All songs are'+songs);
-})*/
-.catch((err)=>{
-    console.log(err);
-});
+}).catch(err=>console.log(err));
 
 // albums
 app.get('/',albumControllers.welcome);
@@ -44,7 +24,7 @@ app.post("/albums", albumControllers.create);
 
 app.get("/albums", albumControllers.list);
 
-app.patch("/albums/:albumId", albumControllers.update);
+app.put("/albums/:albumId", albumControllers.update);
 
 app.delete("/albums/:albumId", albumControllers.deleteAlbum);
 
@@ -52,14 +32,13 @@ app.delete("/albums/:albumId", albumControllers.deleteAlbum);
 
 app.post("/albums/:albumId/songs", songControllers.create);
 
-//app.get("/albums/:albumId/songs/:songId",getSongsByAlbumId);
+app.get("/albums/:albumId/songs/:songId",songControllers.getSong);
 
 app.get("/songs", songControllers.list);
 
-app.patch("/albums/:albumId/songs/:songId", songControllers.update);
+app.put("/albums/:albumId/songs/:songId", songControllers.update);
 
 app.delete("/albums/:albumId/songs/:songId",songControllers.deleteSong);
-
 
 
 app.listen(8080,()=>{
