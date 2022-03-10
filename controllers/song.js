@@ -29,6 +29,9 @@ const list = (req, res) => {
           model: albums
         }
       ],
+      order: [
+        ["createdAt", "DESC"],
+      ],
     }).then((songs) => {
       res.status(200).send(songs);
     }).catch(err=>{
@@ -38,7 +41,11 @@ const list = (req, res) => {
 
 const getSong = (req, res) => {
   const { songId } = req.params;
-  songs.findOne({ where: { id: songId } }).then(
+  songs.findOne({ where: { id: songId },
+       order: [
+       ["createdAt", "DESC"],
+       ],}) 
+    .then(
     (song) => {
       if (!song) {
         res.status(404).send({ error: "The song does not exist." });
