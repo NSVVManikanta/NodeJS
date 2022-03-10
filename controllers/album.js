@@ -6,37 +6,27 @@ const welcome = (req, res) => {
 };
 
 const create = (req, res) => {
-  const { songsId } = req.params;
-
-  songs.findByPk(songsId).then((songs) => {
-    if (!songs) {
-      res.status(404).json({ error: "The song could not be found." });
-    } else {
-      songs.create({
+      albums.create({
         title:req.body.title,
-        length:req.body.length,
-        composers:req.body.composers,
-        singers:req.body.singers,
-        lyricists:req.body.lyricists
+        year:req.body.year
       }).then((album) => {
-        album.setSongs(songs).then((album) => {
-          res.status(201).json(album);
-        });
+        res.status(200).send(album);
+      }).catch(err=>{
+        console.log(err);
       });
-    }
-  });
-};
+    };
 
 const list = (req, res) => {
     albums.findAll({
       include: [
         {
-          model: songs,
-          as: "songs",
-        },
+          model: songs
+        }
       ],
     }).then((albums) => {
       res.status(200).send(albums);
+    }).catch(err=>{
+      console.log(err);
     });
   };
 
