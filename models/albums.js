@@ -18,3 +18,6 @@ const albums= sequelize.define('albums',{
     },
    
 });
+
+
+module.exports=albums;
