@@ -23,6 +23,9 @@ const list = (req, res) => {
           model: songs
         }
       ],
+      order: [
+        ["createdAt", "DESC"],
+      ],
     }).then((albums) => {
       res.status(200).send(albums);
     }).catch(err=>{
