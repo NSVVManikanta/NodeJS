@@ -36,14 +36,28 @@ const list = (req, res) => {
     });
 };
 
+const getSong = (req, res) => {
+  const { songId } = req.params;
+  songs.findOne({ where: { id: songId } }).then(
+    (song) => {
+      if (!song) {
+        res.status(404).send({ error: "The song does not exist." });
+      } else {
+        res.status(200).send(song);
+      }
+    }
+  );
+};
+
+
   const update = (req, res) => {
     const { songId } = req.params;
-    Song.update(req.body, { where: { id: songId } }).then(
+    songs.update(req.body, { where: { id: songId } }).then(
       ([numOfRowsUpdated]) => {
         if (numOfRowsUpdated === 0) {
-          res.status(404).json({ error: "The song does not exist." });
+          res.status(404).send({ error: "The song does not exist." });
         } else {
-          res.status(200).json([numOfRowsUpdated]);
+          res.status(200).send([numOfRowsUpdated]);
         }
       }
     );
@@ -52,18 +66,18 @@ const list = (req, res) => {
   const deleteSong = (req, res) => {
 
     const { songId } = req.params;
-    Song.destroy({ where: { id: songId } }).then((numOfRowsDeleted) => {
+    songs.destroy({ where: { id: songId } }).then((numOfRowsDeleted) => {
       if (numOfRowsDeleted === 0) {
-        res.status(404).json({ error: "The song does not exist." });
+        res.status(404).send({ error: "The song does not exist." });
       }
-      res.status(204).json(numOfRowsDeleted);
+      res.status(200).send(numOfRowsDeleted);
     });
   };
   
   module.exports = {
     create,
     list,
-   // getSongsByAlbumId,
+    getSong,
     update,
     deleteSong,
   };
