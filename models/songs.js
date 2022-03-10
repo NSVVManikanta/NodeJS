@@ -29,6 +29,10 @@ const song= sequelize.define('songs',{
         type : Sequelize.STRING,
         allowNull : false,
     },
+    /*albumId : {
+        type : Sequelize.INTEGER,
+        allownull
+    }*/
    
 });
 
