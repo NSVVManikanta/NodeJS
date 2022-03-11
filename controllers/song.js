@@ -1,24 +1,37 @@
 const albums = require('../models/albums');
 const songs = require('../models/songs');
+const joi = require('@hapi/joi');
 
+const schema = joi.object().keys({
+  title :joi.string().required(),
+  composers:joi.string().required(),
+  singers:joi.string().required(),
+  lyricists:joi.string().required(),
+});
 
 const create = (req,res)=>{
+  const schemaerr = schema.validate(
+    req.body.title,
+    req.body.composers,
+    req.body.singers,
+    req.body.lyricists,
+    );
+  if(schemaerr.error){
+    return res.send(schemaerr.error);
+  }else{
   songs.create({
     title:req.body.title,
     length:req.body.length,
     composers:req.body.composers,
     singers:req.body.singers,
     lyricists:req.body.lyricists,
-    include: [
-      {
-        model: albums
-      }
-    ],
+    albumId :req.params.albumId,
   }).then((songs) => {
     res.status(200).send(songs);
   }).catch(err=>{
     console.log(err);
   });
+}
 };
 
 
@@ -42,11 +55,11 @@ const list = (req, res) => {
 const getSong = (req, res) => {
   const { songId } = req.params;
   songs.findOne({ where: { id: songId },
-       order: [
-       ["createdAt", "DESC"],
-       ],}) 
-    .then(
-    (song) => {
+    order: [
+      ["createdAt", "DESC"],
+    ], 
+    })
+    .then((song) => {
       if (!song) {
         res.status(404).send({ error: "The song does not exist." });
       } else {
