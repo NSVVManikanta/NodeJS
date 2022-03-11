@@ -13,7 +13,7 @@ const song= sequelize.define('songs',{
         unique: true
     },
     length:{
-        type : Sequelize.TIME,
+        type : Sequelize.STRING,
         allowNull : false,
     },
     composers:{
