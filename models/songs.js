@@ -29,10 +29,10 @@ const song= sequelize.define('songs',{
         type : Sequelize.STRING,
         allowNull : false,
     },
-    /*albumId : {
+    albumId : {
         type : Sequelize.INTEGER,
-        allownull
-    }*/
+        allownull :false,
+    }
    
 });
 
