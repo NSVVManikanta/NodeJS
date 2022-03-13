@@ -1,21 +1,22 @@
 const albums = require('../models/albums');
 const songs = require('../models/songs');
-const joi = require('@hapi/joi');
+const Joi = require('joi');
 
-const schema = joi.object().keys({
-  title :joi.string().required(),
-  composers:joi.string().required(),
-  singers:joi.string().required(),
-  lyricists:joi.string().required(),
+//Create Song
+const schema = Joi.object({
+  title :Joi.string().alphanum().min(2).max(250).required(),
+  composers:Joi.string().alphanum().min(2).max(250).required(),
+  singers:Joi.string().alphanum().min(2).max(250).required(),
+  lyricists:Joi.string().alphanum().min(2).max(250).required(),
 });
-
 const create = (req,res)=>{
-  const schemaerr = schema.validate(
-    req.body.title,
-    req.body.composers,
-    req.body.singers,
-    req.body.lyricists,
-    );
+  const dataToValidate = {
+    title:req.body.title,
+    composers:req.body.composers,
+    singers:req.body.singers,
+    lyricists:req.body.lyricists,
+  }
+  const schemaerr = schema.validate(dataToValidate);
   if(schemaerr.error){
     return res.send(schemaerr.error);
   }else{
@@ -32,9 +33,9 @@ const create = (req,res)=>{
     console.log(err);
   });
 }
-};
+ };
 
-
+//Songs List
 const list = (req, res) => {
     songs.findAll({
       include: [
@@ -52,6 +53,7 @@ const list = (req, res) => {
     });
 };
 
+// Get One Song
 const getSong = (req, res) => {
   const { songId } = req.params;
   songs.findOne({ where: { id: songId },
@@ -69,10 +71,32 @@ const getSong = (req, res) => {
   );
 };
 
-
+//Update Song
+const schema1 = Joi.object({
+  title :Joi.string().alphanum().min(2).max(250).required(),
+  composers:Joi.string().alphanum().min(2).max(250).required(),
+  singers:Joi.string().alphanum().min(2).max(250).required(),
+  lyricists:Joi.string().alphanum().min(2).max(250).required(),
+});
   const update = (req, res) => {
+    const dataToValidate1 = {
+      title:req.body.title,
+      composers:req.body.composers,
+      singers:req.body.singers,
+      lyricists:req.body.lyricists,
+    }
+    const schemaerr1 = schema1.validate(dataToValidate1);
+  if(schemaerr1.error){
+    return res.send(schemaerr1.error);
+  }else{
     const { songId } = req.params;
-    songs.update(req.body, { where: { id: songId } }).then(
+    songs.update({
+      title:req.body.title,
+      length:req.body.length,
+      composers:req.body.composers,
+      singers:req.body.singers,
+      lyricists:req.body.lyricists,
+      albumId :req.params.albumId}, { where: { id: songId } }).then(
       ([numOfRowsUpdated]) => {
         if (numOfRowsUpdated === 0) {
           res.status(404).send({ error: "The song does not exist." });
@@ -82,17 +106,27 @@ const getSong = (req, res) => {
       }
     );
   };
+};
 
-  const deleteSong = (req, res) => {
-
-    const { songId } = req.params;
-    songs.destroy({ where: { id: songId } }).then((numOfRowsDeleted) => {
-      if (numOfRowsDeleted === 0) {
-        res.status(404).send({ error: "The song does not exist." });
+//Delete Song
+const deleteSong = async(req, res) => {
+  try{
+    const albumId= req.params.albumId;
+    const album = await albums.findByPk(albumId)
+      if(!album){
+        return res.status(404).send({ error: "The album does not exist." });
       }
-      res.status(200).send(numOfRowsDeleted);
-    });
-  };
+   const  songId  = req.params.songId;
+  const song = await songs.findByPk(songId)
+  if(!song){
+    return res.status(404).send({ error: "The song does not exist." });
+  }
+  await song.destroy();
+  res.send("deleted song successfully!");
+}catch(err){
+console.log(err);
+}
+}
   
   module.exports = {
     create,
