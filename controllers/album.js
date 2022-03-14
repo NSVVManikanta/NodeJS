@@ -8,23 +8,15 @@ const welcome = (req, res) => {
   res.status(200).send("Music Library API. Built by manikanta.");
 };
 
-// const objectSchema =Joi.object({
-//   title :Joi.string().alphanum().min(2).max(250).required(),
-//   composers:Joi.string().alphanum().min(2).max(250).required(),
-//   singers:Joi.string().alphanum().min(2).max(250).required(),
-//   lyricists:Joi.string().alphanum().min(2).max(250).required(),
-// });
 const schema = Joi.object({
   title :Joi.string().alphanum().min(2).max(250).required(),
   year:Joi.number().integer().min(1900).max(2022).required(),
-  // songs:Joi.array().items(objectSchema).min(1).required(),
 });
 // Create Album
 const create = async (req, res) => {
   const dataToValidate = {
     title:req.body.title,
     year:req.body.year,
-    // songs:req.body.songs,
   }
 
   const schemaerr = schema.validate(dataToValidate);
