@@ -4,14 +4,16 @@ const Joi = require('joi');
 
 //Create Song
 const schema = Joi.object({
-  title :Joi.string().alphanum().min(2).max(250).required(),
-  composers:Joi.string().alphanum().min(2).max(250).required(),
-  singers:Joi.string().alphanum().min(2).max(250).required(),
-  lyricists:Joi.string().alphanum().min(2).max(250).required(),
+  title :Joi.string().alphanum().min(0).max(250).required(),
+    length : Joi.string().regex( /(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)/).required(),
+    composers:Joi.string().required(),
+    singers:Joi.string().required(),
+    lyricists:Joi.string().required(),
 });
 const create = (req,res)=>{
   const dataToValidate = {
     title:req.body.title,
+    length:req.body.length,
     composers:req.body.composers,
     singers:req.body.singers,
     lyricists:req.body.lyricists,
@@ -74,13 +76,15 @@ const getSong = (req, res) => {
 //Update Song
 const schema1 = Joi.object({
   title :Joi.string().alphanum().min(2).max(250).required(),
-  composers:Joi.string().alphanum().min(2).max(250).required(),
-  singers:Joi.string().alphanum().min(2).max(250).required(),
-  lyricists:Joi.string().alphanum().min(2).max(250).required(),
+  length :Joi.string().regex( /(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)/).required(),
+  composers:Joi.string().required(),
+  singers:Joi.string().required(),
+  lyricists:Joi.string().required(),
 });
   const update = (req, res) => {
     const dataToValidate1 = {
       title:req.body.title,
+      length:req.body.length,
       composers:req.body.composers,
       singers:req.body.singers,
       lyricists:req.body.lyricists,
